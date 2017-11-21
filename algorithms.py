@@ -2,6 +2,7 @@
 
 import string
 import math
+import secrets
 
 
 def next_square(n):
@@ -74,6 +75,16 @@ def shift_val(square, n):
     """
     n = n % 94 + 32
     return [[chr(((ord(c) + n) % 94 + 33)) for c in l] for l in square]
+
+
+def generate_key(square_size):
+    """
+    The key specifies the argument n for each algorithm.
+
+    The order is: caesar, cycle, rotate, shift_val.
+    """
+    key_form = [26, square_size, 3, 93]
+    return [secrets.randbelow(n + 1) for n in key_form]
 
 
 def prettyprint(square):
