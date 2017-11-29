@@ -3,6 +3,7 @@
 import string
 import math
 import secrets
+import time
 
 
 def next_square(n):
@@ -36,11 +37,28 @@ def square(text, n):
     return list(res)
 
 
+def square_back(square):
+    """Given a square list of text, return the original text string."""
+    res = ''
+    for l in square:
+        for c in l:
+            res += str(c)
+    return res.strip()
+
+
 def rotate(square, n=1):
     """Given a square list, rotate it clockwise by one turn."""
     n = abs(n)
     if n != 0:
         square = rotate(list(zip(*square[::-1])), n - 1)
+    return [list(l) for l in square]
+
+
+def rotate_back(square, n=1):
+    """Given a square list, rotate it counterclockwise by one turn."""
+    n = abs(n)
+    if n != 0:
+        square = rotate_back(list(zip(*square))[::-1], n - 1)
     return [list(l) for l in square]
 
 
@@ -50,14 +68,23 @@ def reverse(square):
 
 
 def caesar(square, shift):
-    """Caesar shift all letters in the square."""
-    alphabet = string.ascii_lowercase
-    shifted_alphabet = alphabet[shift:] + alphabet[:shift]
-    table = str.maketrans(alphabet, shifted_alphabet)
-    return [[c.translate(table) for c in l] for l in square]
+    """Caesar shift all lowercase letters in the square."""
+    lower = string.ascii_lowercase
+    upper = string.ascii_uppercase
+    alphabet = lower + upper
+    shifted_alphabet = (lower[shift:] + lower[:shift] +
+                        upper[shift:] + upper[:shift])
+    trans = str.maketrans(alphabet, shifted_alphabet)
+    return [[c.translate(trans) for c in l] for l in square]
+
+
+def caesar_back(square, shift):
+    """Reverses the caesar shift."""
+    return caesar(square, -shift)
 
 
 def cycle(square, n):
+    """Cycles the character order of each row."""
     i = n
     res = []
     for l in square:
@@ -65,16 +92,19 @@ def cycle(square, n):
     return res
 
 
-# Because of the printable check, decryption may be weird/difficult.
-# If this is the case, remove that part.
-def shift_val(square, n):
-    """
-    Shifts all ASCII values by n.
+def cycle_back(square, n):
+    """Reverses the cycled character order of each row."""
+    return cycle(square, -n)
 
-    Ensures that only printable characters are valid shifts.
-    """
-    n = n % 94 + 32
-    return [[chr(((ord(c) + n) % 94 + 33)) for c in l] for l in square]
+
+def shift(square, n):
+    """Shifts all ASCII values by n."""
+    return [[chr((ord(c) + n) % 127) for c in l] for l in square]
+
+
+def shift_back(square, n):
+    """Shifts all ASCII values back by n."""
+    return shift(square, -n)
 
 
 def generate_key(square_size):
@@ -83,8 +113,57 @@ def generate_key(square_size):
 
     The order is: caesar, cycle, rotate, shift_val.
     """
-    key_form = [26, square_size, 3, 93]
+    key_form = [25, square_size, 3, 93]
     return [secrets.randbelow(n + 1) for n in key_form]
+
+
+def check_key(key, square_size):
+    """Checks if the given key is in a valid format."""
+    return (
+        key[0] in range(0, 26) and
+        key[1] in range(0, square_size + 1) and
+        key[2] in range(0, 4) and
+        key[3] in range(0, 94)
+    )
+
+
+def encrypt(s, key):
+    size = next_square(len(s))
+
+    print("Squared:")
+    sq = square(s, size)
+    prettyprint(sq)
+
+    print("Caesar'd:")
+    sq = caesar(sq, key[0])
+    prettyprint(sq)
+
+    print("Cycled:")
+    sq = cycle(sq, key[1])
+    prettyprint(sq)
+
+    print("Reversed:")
+    sq = reverse(sq)
+    prettyprint(sq)
+
+    print("Rotated:")
+    sq = rotate(sq, key[2])
+    prettyprint(sq)
+
+    print("Shifted:")
+    sq = shift(sq, key[3])
+    prettyprint(sq)
+    return sq
+
+
+def decrypt(sq, key):
+    sq = shift_back(sq, key[3])
+    sq = rotate_back(sq, key[2])
+    sq = reverse(sq)
+    sq = cycle_back(sq, key[1])
+    sq = caesar_back(sq, key[0])
+    s = square_back(sq)
+    return s
 
 
 def prettyprint(square):
@@ -92,4 +171,5 @@ def prettyprint(square):
     for l in square:
         for c in l:
             print(str(c) + ' ', end='')
+            time.sleep(0.1)
         print()
