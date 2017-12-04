@@ -47,7 +47,7 @@ def square_back(square):
 
 
 def rotate(square, n=1):
-    """Given a square list, rotate it clockwise by one turn."""
+    """Given a square list, rotate it clockwise by n turns."""
     n = abs(n)
     if n != 0:
         square = rotate(list(zip(*square[::-1])), n - 1)
@@ -55,7 +55,7 @@ def rotate(square, n=1):
 
 
 def rotate_back(square, n=1):
-    """Given a square list, rotate it counterclockwise by one turn."""
+    """Given a square list, rotate it counterclockwise by n turns."""
     n = abs(n)
     if n != 0:
         square = rotate_back(list(zip(*square))[::-1], n - 1)
@@ -68,7 +68,7 @@ def reverse(square):
 
 
 def caesar(square, shift):
-    """Caesar shift all lowercase letters in the square."""
+    """Caesar shift all letters in the square."""
     lower = string.ascii_lowercase
     upper = string.ascii_uppercase
     alphabet = lower + upper
@@ -171,5 +171,5 @@ def prettyprint(square):
     for l in square:
         for c in l:
             print(str(c) + ' ', end='')
-            time.sleep(0.1)
         print()
+        time.sleep(0.3)
