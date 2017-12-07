@@ -35,7 +35,7 @@ public class AsyncEncryptor{
   private char[][] content;
   
   public AsyncEncryptor(String message){
-    int len = nextSquare(message.length()));
+    int len = nextSquare(message.length());
     rowCol(message, len);
   }
   
