@@ -2,7 +2,7 @@
 """Simple command line tool to encrypt text badly."""
 
 from algorithms import *
-import pickle
+import json
 
 key = [-1, -1, -1, -1]
 print("Type the text you wish to encrypt:")
@@ -26,10 +26,10 @@ print("Secret Key (keep safe): " + str(key))
 ct = encrypt(pt, key)
 
 ct_filename = 'ciphertext.out'
-with open(ct_filename, 'wb') as f:
-    pickle.dump(ct, f)
+with open(ct_filename, 'w') as f:
+    json.dump(ct, f)
 
 # ensure it is dumped and decryption is valid
-with open(ct_filename, 'rb') as f:
-    ct = pickle.load(f)
+with open(ct_filename, 'r') as f:
+    ct = json.load(f)
     assert(pt == decrypt(ct, key))

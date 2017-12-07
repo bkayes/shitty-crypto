@@ -4,6 +4,7 @@ import string
 import math
 import secrets
 import time
+import re
 
 
 def next_square(n):
@@ -113,15 +114,15 @@ def generate_key(square_size):
 
     The order is: caesar, cycle, rotate, shift_val.
     """
-    key_form = [25, square_size, 3, 93]
-    return [secrets.randbelow(n + 1) for n in key_form]
+    key_form = [26, square_size, 4, 94]
+    return [secrets.randbelow(n) for n in key_form]
 
 
 def check_key(key, square_size):
     """Checks if the given key is in a valid format."""
     return (
         key[0] in range(0, 26) and
-        key[1] in range(0, square_size + 1) and
+        key[1] in range(0, square_size) and
         key[2] in range(0, 4) and
         key[3] in range(0, 94)
     )
@@ -166,10 +167,21 @@ def decrypt(sq, key):
     return s
 
 
+def score_text(s):
+    score = 0
+    for c in s:
+        if c in string.ascii_letters or c == ' ':
+            score += 1
+    return score
+
+
+def list_to_str(sq):
+    return ''.join(str(item) for row in sq for item in row)
+
+
 def prettyprint(square):
     """Print the given square in a square"""
     for l in square:
         for c in l:
             print(str(c) + ' ', end='')
         print()
-        time.sleep(0.3)

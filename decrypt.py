@@ -2,12 +2,12 @@
 """Simple command line tool to decrypt text encrypted badly."""
 
 from algorithms import *
-import pickle
+import json
 
 key = [-1, -1, -1, -1]
 ct_filename = 'ciphertext.out'
-with open(ct_filename, 'rb') as f:
-    ct = pickle.load(f)
+with open(ct_filename, 'r') as f:
+    ct = json.load(f)
 
 square_size = len(ct)
 
