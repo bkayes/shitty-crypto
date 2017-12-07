@@ -27,12 +27,16 @@ OPERATION CODES:
 
 */
 
+import java.util.Arrays;
+import java.util.System;
+
 public class AsyncEncryptor{
  
   private char[][] content;
   
   public AsyncEncryptor(String message){
-    content = rowCol(message);
+    int len = nextSquare(message.length());
+    rowCol(message, len);
   }
   
   public char[][] getCurrentContent(){
@@ -41,7 +45,7 @@ public class AsyncEncryptor{
   
   public void updateContent(int opIndex, int numInput){
     switch(opIndex){
-      case 10: rowCol(); break;
+      case 10: rowCol(/*not sure why this is being called again?*/); break;
       case 0: nRotate(numInput); break;
       case 1: reverseRows(); break;
       case 2: caesar(numInput); break;
@@ -52,42 +56,44 @@ public class AsyncEncryptor{
   
   private int nextSquare(int n){
     /* Finds the next integer which, when squared, is greater than n. */
-    return Math.ceil(Math.sqrt(n));
+    return (int)(Math.ceil(Math.sqrt(n)));
   }
   
   private String pad(String s, int n){
     /* Pad a given text with spaces so it's length is a multiple of n. */
-    int pad_n = n - s.length % n;
-    if pad_n == n return s;
-    string pad = new String(new char[pad_n]).replace("\0", " ");
+    int pad_n = n - s.length() % n;
+    if (pad_n == n) return s;
+    String pad = new String(new char[pad_n]).replace("\0", " ");
     return s + pad;
   }
 
   private String[] chunk(String s, int n){
     /* Chunk text into list of char lists with size n. */
     s = pad(s,n);
-    return java.util.Arrays.toString(s.split("(?<=\\G.{3})"))
+    return s.split("(?<=\\G.{"+n+"})");
   }
 
-  private char[][] rowCol(String s, int n){
+  private void rowCol(String s, int n){
     /* Return a square list with n rows and cols of chunks of text. */
     String pad_str = new String(new char[n]).replace("\0", " ");
     String[] padding = new String[n];
     Arrays.fill(padding, pad_str);
-    String[] chunks = chunk(s);
-    String[] square = Stream.concat(Arrays.stream(chunks), Arrays.stream(padding)).toArray(String[]::new);
+    String[] chunks = chunk(s, n);
+    String[] square = new String[chunks.length + padding.length];
+    System.arraycopy(chunks, 0, square, 0, chunks.length);
+    System.arraycopy(padding, 0, square, chunks.length, padding.length);
 
     char[][] ret = new char[n][n];
     for(int i=0; i < square.length; i++){
         ret[i] = square[i].toCharArray();
     }
-    return ret;
+    content = ret;
   }
   
   private char[][] rotateOnce(char[][] square){
     int M = square.length;
     int N = square[0].length;
-    int[][] ret = new int[N][M];
+    char[][] ret = new char[N][M];
     for (int r = 0; r < M; r++) {
         for (int c = 0; c < N; c++) {
             ret[c][M-1-r] = square[r][c];
@@ -95,61 +101,63 @@ public class AsyncEncryptor{
     }
     return ret;
   }
-  private char[][] nRotate(char[][] square, int n){
+  private void nRotate(int n){
+    char[][] square = content;
     /* Given a square char array, rotate it clockwise by n turns. */
     for (int i=0; i<n; i++) {
         square = rotateOnce(square);
     }
-    return square;
+    content = square;
   }
   
-  private char[][] reverseRows(char[][] square){
+  private void reverseRows(){
+    char[][] square = content;
     /* Reverse the rows of the square. */
     for(int i = 0; i < square.length / 2; i++) {
         char[] temp = square[i];
         square[i] = square[square.length - i - 1];
         square[square.length - i - 1] = temp;
     }
-    return square;
+    content = square;
   }
   
-  private char[][] caesar(char[][] square, int n){
+  private void caesar(int n){
+    char[][] square = content;
     /*Caesar shift all letters in the square*/
-    len = square.length
+    int len = square.length;
     char[][] res = new char[len][len];
     char c;
     for (int r = 0; r < len; r++){
-        row = new char[len];
-        for (int c = 0; c < len){
-            ch = square[r][c];
+        char[] row = new char[len];
+        for (int c = 0; c < len; c++){
+            char ch = square[r][c];
             // if c is letter ONLY then shift them, else directly add it
             if (Character.isLetter(ch)){
-                ch = (char) (square[r][c] + shift);
+                ch = (char) (square[r][c] + n);
                 // checking case or range check is important, just if (c > 'z'
                 // || c > 'Z')
                 // will not work
                 if ((Character.isLowerCase(square[r][c]) && ch > 'z') ||
                     (Character.isUpperCase(square[r][c]) && ch > 'Z')){
-                    ch = (char) (square[r][c] - (26 - shift));
+                    ch = (char) (square[r][c] - (26 - n));
                 }
             }
             row[c] = ch;
         }
         res[r] = row;
     }
-    return res;
+    content = res;
   }
   
-  private char[][] cycle(char[][] square, int n){
-    int len = square.length
+  private void cycle(int n){
+    char[][] square = content;
+    int len = square.length;
     /* Cycles the character order of each row. */
-    for (int r = 0; r < len; r++) {
-        String row = Arrays.toString(square[r]);
-
-    }
+    
   }
   
-  private char[][] shiftChars(char[][] square, int n){
+  private void shiftChars(int n){
+    char[][] square = content;
     /* Shift each character Caesar cipher style by value n */
     
   }
