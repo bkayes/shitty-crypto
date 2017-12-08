@@ -25,7 +25,7 @@ print("Secret Key (keep safe): " + str(key))
 
 ct = encrypt(pt, key)
 
-ct_filename = 'ciphertext.out'
+ct_filename = 'ciphertext.json'
 with open(ct_filename, 'w') as f:
     json.dump(ct, f)
 

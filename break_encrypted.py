@@ -5,7 +5,7 @@ from algorithms import *
 import json
 
 key = [-1, -1, -1, -1]
-ct_filename = 'ciphertext.out'
+ct_filename = 'ciphertext.json'
 with open(ct_filename, 'r') as f:
     ct = json.load(f)
 
