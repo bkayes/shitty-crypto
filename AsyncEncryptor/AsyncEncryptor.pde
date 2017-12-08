@@ -73,11 +73,11 @@ public class AsyncEncryptor{
   private void rowCol(String s, int n){
     /* Return a square list with n rows and cols of chunks of text. */
     String pad_str = new String(new char[n]).replace("\0", " ");
-    String[] padding = new String[n];
+    String[] chunks = chunk(s, n);
+    String[] padding = new String[n-chunks.length];
     for (int i = 0; i < padding.length; i++) {
       padding[i] = pad_str;
     }
-    String[] chunks = chunk(s, n);
     String[] square = new String[chunks.length + padding.length];
     for (int i = 0; i < square.length; i++) {
       if (i < chunks.length) {
