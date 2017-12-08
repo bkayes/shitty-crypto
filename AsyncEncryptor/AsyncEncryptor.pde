@@ -26,7 +26,6 @@ OPERATION CODES:
   11+ - <FREE>
 
 */
-import java.util.System;
 
 public class AsyncEncryptor{
  
