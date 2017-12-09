@@ -73,6 +73,27 @@ for cyc in range(0, square_size + 1):
 key[1] = int(input('Please select the best cycle: '))
 ct = cycle_back(ct, key[1])
 
+# BREAK CYCLE 2 #
+
+vert_cyc = input("Vertical shift? (Y/N): ").strip().upper()
+
+if not vert_cyc or vert_cyc[0] == 'N':
+    pass
+else:
+    for cyc in range(0, square_size + 1):
+        key[1] = cyc
+        test = rotate(ct, 1)
+        test_cyc = cycle_back(test, key[1])
+        print('Cyc: ', cyc)
+        print('Cycled Back: ')
+        prettyprint(rotate_back(test_cyc, 1))
+        print()
+
+    key[1] = int(input('Please select the best cycle: '))
+    ct = rotate(ct, 1)
+    ct = cycle_back(ct, key[1])
+    ct = rotate_back(ct, 1)
+
 pt = square_back(ct)
 print('Key: ', key)
 print('Totally decrypted plaintext: ')
